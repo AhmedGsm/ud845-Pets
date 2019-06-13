@@ -20,7 +20,7 @@ public class PetDbHelper extends SQLiteOpenHelper {
             ");";
     private static final String SQL_DROP_TABLE_SCHEMA = "DROP TABLE IF EXISTS  " + PetsEntry.TABLE_NAME ;
 
-    public PetDbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public PetDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
