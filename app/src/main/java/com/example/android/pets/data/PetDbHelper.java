@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 
 public class PetDbHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "pets.db";
+    private static final String DATABASE_NAME = "shelter.db";
     private static final int DATABASE_VERSION = 1;
     private static final String SQL_CREATE_TABLE_SCHEMA = "CREATE TABLE " + PetsEntry.TABLE_NAME +
             " (" +
