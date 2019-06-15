@@ -28,6 +28,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import com.example.android.pets.data.PetsContract.PetsEntry;
 
+import com.example.android.pets.data.PetsContract;
+
 /**
  * Allows user to create a new pet or edit an existing one.
  */
