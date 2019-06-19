@@ -116,13 +116,31 @@ public class CatalogActivity extends AppCompatActivity {
                 null,
                 null,
                 null);
+        int columnIndexID = cursor.getColumnIndex(PetsEntry.COLUMN_PET_ID);
+        int columnIndexName = cursor.getColumnIndex(PetsEntry.COLUMN_PET_NAME);
+        int columnIndexBreed = cursor.getColumnIndex(PetsEntry.COLUMN_PET_BREED);
+        int columnIndexGender = cursor.getColumnIndex(PetsEntry.COLUMN_PET_GENDER);
+        int columnIndexWeight = cursor.getColumnIndex(PetsEntry.COLUMN_PET_WEIGHT);
+       
         try {
             // Display the number of rows in the Cursor (which reflects the number of rows in the
             // pets table in the database).
             TextView displayView = (TextView) findViewById(R.id.text_view_pet);
             int rowsCount = cursor.getCount();
             displayView.setText("Number of rows in pets database table: " + rowsCount);
-
+            displayView.append(" \n " +PetsEntry.COLUMN_PET_ID + " - " +
+                    PetsEntry.COLUMN_PET_NAME + " - " +
+                    PetsEntry.COLUMN_PET_BREED + " - " +
+                    PetsEntry.COLUMN_PET_GENDER + " - " +
+                    PetsEntry.COLUMN_PET_WEIGHT + " \n "  );
+            while(cursor.moveToNext()) {
+                displayView.append(String.valueOf(cursor.getInt(columnIndexID)));
+                displayView.append(" - " + cursor.getString(columnIndexName));
+                displayView.append(" - " + cursor.getString(columnIndexBreed));
+                displayView.append(" - " + String.valueOf(cursor.getInt(columnIndexGender)));
+                displayView.append(" - " + String.valueOf(cursor.getInt(columnIndexWeight)));
+                displayView.append("\n");
+            }
 
         } finally {
             // Always close the cursor when you're done reading from it. This releases all its
