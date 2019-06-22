@@ -1,9 +1,20 @@
 package com.example.android.pets.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
+
 
 public final class PetsContract {
     private PetsContract(){}
+    //URI's Content database
+    //Content Authority
+    public static final String CONTENT_AUTHORITY = "com.example.android.pets";
+    //Pets table data
+
+    public static final String PATH_PETS = "pets";
+    //Base content Uri
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+
     //Class Entry
     public static  class PetsEntry implements BaseColumns {
         // TABLE NAME
@@ -17,6 +28,9 @@ public final class PetsContract {
         public static final String COLUMN_PET_BREED = "breed";
         public static final String COLUMN_PET_GENDER = "gender";
         public static final String COLUMN_PET_WEIGHT = "weight";
+        //Full content Uri
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_PETS);
+
     }
 
 }
