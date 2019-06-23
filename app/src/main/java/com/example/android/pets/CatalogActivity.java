@@ -19,6 +19,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -80,17 +81,15 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void insertPet() {
-        PetDbHelper mDbHelper = new PetDbHelper(this);
 
-        // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        //Insert values to ContentValues object
         ContentValues contentValues = new ContentValues();
         contentValues.put(PetsEntry.COLUMN_PET_NAME,"Toto");
         contentValues.put(PetsEntry.COLUMN_PET_BREED,"Terrier");
         contentValues.put(PetsEntry.COLUMN_PET_GENDER,PetsEntry.PETS_GENDER_MALE);
         contentValues.put(PetsEntry.COLUMN_PET_WEIGHT,17);
-        long rowId = db.insert(PetsEntry.TABLE_NAME, null, contentValues) ;
-        Log.w("rowId-->","rowId" + rowId);
+        Uri uri = getContentResolver().insert(PetsEntry.CONTENT_URI,  contentValues) ;
+        Log.w("uri-->","uri" + uri);
         //Display Database row count
         displayDatabaseInfo();
     }
@@ -114,12 +113,6 @@ public class CatalogActivity extends AppCompatActivity {
                 null,
                 null);
         try {
-            //Get columns indices passing the columns names
-            int columnIndexID = cursor.getColumnIndex(PetsEntry.COLUMN_PET_ID);
-            int columnIndexName = cursor.getColumnIndex(PetsEntry.COLUMN_PET_NAME);
-            int columnIndexBreed = cursor.getColumnIndex(PetsEntry.COLUMN_PET_BREED);
-            int columnIndexGender = cursor.getColumnIndex(PetsEntry.COLUMN_PET_GENDER);
-            int columnIndexWeight = cursor.getColumnIndex(PetsEntry.COLUMN_PET_WEIGHT);
 
             // Display the number of rows in the Cursor (which reflects the number of rows in the
             // pets table in the database).
@@ -132,6 +125,13 @@ public class CatalogActivity extends AppCompatActivity {
                     PetsEntry.COLUMN_PET_GENDER + " - " +
                     PetsEntry.COLUMN_PET_WEIGHT + " \n "  );
             while(cursor.moveToNext()) {
+                // Get columns indices passing the columns names
+                int columnIndexID = cursor.getColumnIndex(PetsEntry.COLUMN_PET_ID);
+                int columnIndexName = cursor.getColumnIndex(PetsEntry.COLUMN_PET_NAME);
+                int columnIndexBreed = cursor.getColumnIndex(PetsEntry.COLUMN_PET_BREED);
+                int columnIndexGender = cursor.getColumnIndex(PetsEntry.COLUMN_PET_GENDER);
+                int columnIndexWeight = cursor.getColumnIndex(PetsEntry.COLUMN_PET_WEIGHT);
+                // Display query results in textView
                 displayView.append(String.valueOf(cursor.getInt(columnIndexID)));
                 displayView.append(" - " + cursor.getString(columnIndexName));
                 displayView.append(" - " + cursor.getString(columnIndexBreed));

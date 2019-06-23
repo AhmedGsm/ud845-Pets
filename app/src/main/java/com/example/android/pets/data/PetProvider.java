@@ -9,6 +9,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 /**
  * {@link ContentProvider} for Pets app.
@@ -17,7 +18,10 @@ public class PetProvider extends ContentProvider {
 
     /** Tag for the log messages */
     public static final String LOG_TAG = PetProvider.class.getSimpleName();
+    // instantiate PetDbHelper object
     private PetDbHelper mDbHelper;
+    // instantiate sqlite database object
+    private SQLiteDatabase database;
     // URI matcher code for the content URI for the pats table
     private static final int PETS = 100;
     // URI matcher code for the content URI for the pats table
@@ -28,11 +32,7 @@ public class PetProvider extends ContentProvider {
     static {
         sUriMatcher.addURI(PetsContract.CONTENT_AUTHORITY,PetsContract.PATH_PETS,PETS);
         sUriMatcher.addURI(PetsContract.CONTENT_AUTHORITY,PetsContract.PATH_PETS + "/#",PET_ID);
-
-
     }
-
-
 
     /**
      * Initialize the provider and the database helper object.
@@ -50,7 +50,7 @@ public class PetProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
         // Get readable database
-        SQLiteDatabase database = mDbHelper.getReadableDatabase();
+        database = mDbHelper.getReadableDatabase();
 
         // This cursor will hold the result of the query
         Cursor cursor ;
@@ -92,9 +92,14 @@ public class PetProvider extends ContentProvider {
      */
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PETS:
+                return insertPet(uri, contentValues);
+            default:
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
     }
-
     /**
      * Updates the data at the given selection and selection arguments, with the new ContentValues.
      */
@@ -117,5 +122,22 @@ public class PetProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         return null;
+    }
+    /**
+     * Insert a pet into the database with the given content values. Return the new content URI
+     * for that specific row in the database.
+     */
+    private Uri insertPet(Uri uri, ContentValues values) {
+        //Get writable database helper
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+        // Insert a new pet into the pets database table with the given ContentValues
+        long id = database.insert(PetsEntry.TABLE_NAME,null,values);
+        if(id == -1) {
+            Log.e("PetProvider","Failed to insert new row");
+            return null;
+        }
+        // Once we know the ID of the new row in the table,
+        // return the new URI with the ID appended to the end of it
+        return ContentUris.withAppendedId(uri, id);
     }
 }

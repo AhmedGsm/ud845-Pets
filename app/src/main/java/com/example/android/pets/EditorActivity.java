@@ -18,6 +18,7 @@ package com.example.android.pets;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -136,7 +137,6 @@ public class EditorActivity extends AppCompatActivity {
             case R.id.action_save:
                 // Insert new pet
                 insertPet();
-
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
@@ -152,25 +152,24 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void insertPet() {
-        PetDbHelper dbHelper = new PetDbHelper(this);
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        //Insert values to ContentValues object
         final ContentValues values = new ContentValues();
-        //  mGenderSpinner.
-       // mGenderSpinner.+++++
-
         values.put(PetsEntry.COLUMN_PET_NAME, mNameEditText.getText().toString().trim());
         values.put(PetsEntry.COLUMN_PET_BREED, mBreedEditText.getText().toString().trim());
         values.put(PetsEntry.COLUMN_PET_GENDER, mGender);
         values.put(PetsEntry.COLUMN_PET_WEIGHT, Integer.parseInt(mWeightEditText.getText().toString().trim()));
-        long insertId =  database.insert(PetsEntry.TABLE_NAME,
-                null,
+        Uri newUri = getContentResolver().insert(PetsEntry.CONTENT_URI,
                 values);
-        if(insertId == -1) {
-            Toast.makeText(this,"Error with saving Pet!",Toast.LENGTH_SHORT).show();
+        if (newUri == null) {
+            // If the new content URI is null, then there was an error with insertion.
+            Toast.makeText(this, getString(R.string.editor_insert_pet_failed),
+                    Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this,"Pet saved with id: " + insertId ,Toast.LENGTH_SHORT).show();
+            // Otherwise, the insertion was successful and we can display a toast.
+            Toast.makeText(this, getString(R.string.editor_insert_pet_successful),
+                    Toast.LENGTH_SHORT).show();
         }
-
+        //Redirect to CatalogActivity
         Intent intent = new Intent(this, CatalogActivity.class);
         startActivity(intent);
     }
