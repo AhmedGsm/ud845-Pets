@@ -100,29 +100,27 @@ public class CatalogActivity extends AppCompatActivity {
      * the pets database.
      */
     private void displayDatabaseInfo() {
-        // To access our database, we instantiate our subclass of SQLiteOpenHelper
-        // and pass the context, which is the current activity.
-        PetDbHelper mDbHelper = new PetDbHelper(this);
 
-        // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
-        // Perform this raw SQL query "SELECT * FROM pets"
-        // to get a Cursor that contains all rows from the pets table.
-        Cursor cursor = db.query(PetsEntry.TABLE_NAME,
-                null,
-                null,
-                null,
+        //projection array that define column to acces during querying database
+        String[] projection = {PetsEntry.COLUMN_PET_ID,
+                PetsEntry.COLUMN_PET_NAME,
+                PetsEntry.COLUMN_PET_BREED,
+                PetsEntry.COLUMN_PET_GENDER,
+                PetsEntry.COLUMN_PET_WEIGHT};
+        // Query the content provider using content resolver and return cursor object
+        Cursor cursor = getContentResolver().query(PetsEntry.CONTENT_URI,
+                projection,
                 null,
                 null,
                 null);
-        int columnIndexID = cursor.getColumnIndex(PetsEntry.COLUMN_PET_ID);
-        int columnIndexName = cursor.getColumnIndex(PetsEntry.COLUMN_PET_NAME);
-        int columnIndexBreed = cursor.getColumnIndex(PetsEntry.COLUMN_PET_BREED);
-        int columnIndexGender = cursor.getColumnIndex(PetsEntry.COLUMN_PET_GENDER);
-        int columnIndexWeight = cursor.getColumnIndex(PetsEntry.COLUMN_PET_WEIGHT);
-       
         try {
+            //Get columns indices passing the columns names
+            int columnIndexID = cursor.getColumnIndex(PetsEntry.COLUMN_PET_ID);
+            int columnIndexName = cursor.getColumnIndex(PetsEntry.COLUMN_PET_NAME);
+            int columnIndexBreed = cursor.getColumnIndex(PetsEntry.COLUMN_PET_BREED);
+            int columnIndexGender = cursor.getColumnIndex(PetsEntry.COLUMN_PET_GENDER);
+            int columnIndexWeight = cursor.getColumnIndex(PetsEntry.COLUMN_PET_WEIGHT);
+
             // Display the number of rows in the Cursor (which reflects the number of rows in the
             // pets table in the database).
             TextView displayView = (TextView) findViewById(R.id.text_view_pet);
